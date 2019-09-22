@@ -19,33 +19,18 @@ from keras.layers import Input
 from sklearn.preprocessing import LabelEncoder
 import numpy as np
 import glob
-import cv2
 import h5py
 import os
 import json
-import datetime
-import time
 
-{
-	"model"           : "xception",
-	"weights"         : "imagenet",
-	"include_top"     : false,
 
-	"train_path"      : "/Users/parthsharma/Desktop/flower-recognition/dataset/train",
-	"test_path"		  : "/Users/parthsharma/Desktop/flower-recognition/test-client",
-	"features_path"   : "/Users/parthsharma/Desktop/flower-recognition/output/defacement/xception/features.h5",
-	"labels_path"     : "/Users/parthsharma/Desktop/flower-recognition/output/defacement/xception/labels.h5",
-	"results"         : "/Users/parthsharma/Desktop/flower-recognition/output/defacement/xception/results.txt",
-	"classifier_path" : "/Users/parthsharma/Desktop/flower-recognition/output/defacement/xception/classifier.pickle",
-	"model_path"	  : "/Users/parthsharma/Desktop/flower-recognition/output/defacement/xception/model",
-
-	"test_size"       : 0.25,
-	"seed"            : 9,
-	"num_classes"     : 2
-}
-class TransferLearning():
-	"""docstring for TransferLearning"""
-	def __init__(self, model="mobilenet", weights="imagenet", include_top=True, test_size=0.20, seed=0, num_classes=2):
+class FeatureExtraction():
+	"""
+		Feature Extraction class for extracting features from image data
+		through pre-trained model and saving features and labels  to
+		user defined path.
+	"""
+	def __init__(self, model="mobilenet", weights="imagenet", include_top=True):
 		
 		
 		if model_name == "vgg16":
@@ -92,8 +77,6 @@ class TransferLearning():
 			self.image_size = (224, 224)
 		else:
 			self.base_model = None
-		self.features_path = ''
-		self.model_path = ''
 		self.features = []
 		self.labels = []
 
@@ -141,26 +124,6 @@ class TransferLearning():
 
 		return flat
 
-	def save(self):
-
-		# save features and labels
-		h5f_data = h5py.File(self.features_path, 'w')
-		h5f_data.create_dataset('dataset_1', data=np.array(self.features))
-
-		h5f_label = h5py.File(labels_path, 'w')
-		h5f_label.create_dataset('dataset_1', data=np.array(self.le_labels))
-
-		h5f_data.close()
-		h5f_label.close()
-
-		# save model and weights
-		model_json = self.model.to_json()
-		with open(self.model_path + str(test_size) + ".json", "w") as json_file:
-			json_file.write(model_json)
-
-		# save weights
-		model.save_weights(self.model_path + str(test_size) + ".h5")
-		
 
 
 
